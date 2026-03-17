@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Інтелектуальна система прогнозування успішності студентів</h1>
+  </div>
+  <div class="hero-actions">
+    <a class="btn primary" href="/groups">Працювати з групами</a>
+    <a class="btn" href="/train">Навчити модель</a>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <div class="card stat"><div class="muted">Груп</div><div class="value">{{ stats.total_groups }}</div></div>
+  <div class="card stat"><div class="muted">Студентів</div><div class="value">{{ stats.total_students }}</div></div>
+  <div class="card stat"><div class="muted">Реальна успішність</div><div class="value">{{ stats.pass_rate }}%</div></div>
+  <div class="card stat"><div class="muted">Прогнозів виконано</div><div class="value">{{ stats.predicted_count }}</div></div>
+</section>
+
+<section class="two-col">
+  <div class="card">
+    <div class="section-title">Групи</div>
+    <div class="list">
+      {% for group in groups %}
+      <a class="list-item" href="/groups/{{ group.id }}">
+        <div>
+          <strong>{{ group.name }}</strong>
+          <div class="muted">{{ group.specialty }}</div>
+        </div>
+        <span class="badge">{{ group.students|length }} студ.</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Останні прогнози</div>
+    <div class="list">
+      {% for item in latest_predictions %}
+      <div class="list-item">
+        <div>
+          <strong>{{ item.student_name }}</strong>
+          <div class="muted">{{ item.group_name }}</div>
+        </div>
+        <div class="align-right">
+          <div class="result {{ 'success' if item.result == 'Склав' else 'danger' }}">{{ item.result }}</div>
+          <div class="muted">{{ '%.1f'|format(item.probability * 100) }}%</div>
+        </div>
+      </div>
+      {% else %}
+      <div class="muted">Ще немає прогнозів.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

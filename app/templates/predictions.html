@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-head"><h1>Історія прогнозів</h1></div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Дата</th><th>Студент</th><th>Група</th><th>Модель</th><th>Результат</th><th>Ймовірність</th></tr></thead>
+      <tbody>
+        {% for item in predictions %}
+        <tr>
+          <td>{{ item.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+          <td>{{ item.student_name }}</td>
+          <td>{{ item.group_name }}</td>
+          <td>{{ item.model_name }}</td>
+          <td><span class="result {{ 'success' if item.result == 'Склав' else 'danger' }}">{{ item.result }}</span></td>
+          <td>{{ '%.1f'|format(item.probability * 100) }}%</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">Ще немає жодного прогнозу.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

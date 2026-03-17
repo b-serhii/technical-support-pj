@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-head"><h1>Редагування студента</h1></div>
+<div class="card narrow-card">
+  <form method="post" class="form-grid">
+    <label>ПІБ<input name="full_name" value="{{ student.full_name }}"></label>
+    <label>Email<input name="email" value="{{ student.email }}"></label>
+    <label>Відвідуваність %<input name="attendance" value="{{ student.attendance }}"></label>
+    <label>Середній бал<input name="average_score" value="{{ student.average_score }}"></label>
+    <label>Активність 0–10<input name="activity_level" value="{{ student.activity_level }}"></label>
+    <label>Пропуски<input name="missed_classes" value="{{ student.missed_classes }}"></label>
+    <label>Бал за модулі<input name="module_score" value="{{ student.module_score }}"></label>
+    <label>Фактичний результат
+      <select name="exam_passed">
+        <option value="1" {% if student.exam_passed == 1 %}selected{% endif %}>Склав</option>
+        <option value="0" {% if student.exam_passed == 0 %}selected{% endif %}>Не склав</option>
+      </select>
+    </label>
+    <button class="btn primary" type="submit">Оновити студента</button>
+    <a class="btn" href="/groups/{{ student.group_id }}">Назад до групи</a>
+  </form>
+  {% if errors %}<div class="error-box">Деякі дані введені некоректно.</div>{% endif %}
+</div>
+{% endblock %}

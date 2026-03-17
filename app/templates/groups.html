@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Групи</h1>
+    <p class="muted">Створюй групи, відкривай їх і додавай студентів.</p>
+  </div>
+</div>
+<div class="two-col stretch-top">
+  <div class="card">
+    <div class="section-title">Створити групу</div>
+    <form method="post" action="/groups" class="form-grid">
+      <label>Назва групи<input name="name" value="{{ form.get('name', '') }}"></label>
+      <label>Спеціальність<input name="specialty" value="{{ form.get('specialty', '') }}"></label>
+      <label>Куратор<input name="curator" value="{{ form.get('curator', '') }}"></label>
+      <label>Семестр<input name="semester" value="{{ form.get('semester', '') }}"></label>
+      <label class="full">Опис<textarea name="description">{{ form.get('description', '') }}</textarea></label>
+      <button class="btn primary" type="submit">Створити групу</button>
+    </form>
+    {% if errors %}<div class="error-box">Перевір поля форми. Деякі значення заповнені неправильно.</div>{% endif %}
+  </div>
+  <div class="card">
+    <div class="section-title">Список груп</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Група</th><th>Спеціальність</th><th>Куратор</th><th>Студенти</th><th></th></tr></thead>
+        <tbody>
+          {% for group in groups %}
+          <tr>
+            <td>{{ group.name }}</td>
+            <td>{{ group.specialty }}</td>
+            <td>{{ group.curator }}</td>
+            <td>{{ group.students|length }}</td>
+            <td><a class="btn small" href="/groups/{{ group.id }}">Відкрити</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

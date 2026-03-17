@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_name }}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div>
+      <div class="brand">{{ app_name }}</div>
+      <nav class="menu">
+        <a href="/">Дашборд</a>
+        <a href="/groups">Групи</a>
+        <a href="/train">Навчання моделі</a>
+        <a href="/predictions">Історія прогнозів</a>
+      </nav>
+    </div>
+    <div class="sidebar-foot">
+      {% if model_metrics %}
+      <div class="mini-card">
+        <div class="muted">Остання accuracy</div>
+        <div class="big">{{ '%.1f'|format(model_metrics.accuracy * 100) }}%</div>
+      </div>
+      {% else %}
+      <div class="mini-card">
+        <div class="muted">Статус моделі</div>
+        <div class="big">Не навчена</div>
+      </div>
+      {% endif %}
+    </div>
+  </aside>
+
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-head between">
+  <div>
+    <h1>{{ group.name }}</h1>
+    <p class="muted">{{ group.specialty }} · Куратор: {{ group.curator }} · Семестр: {{ group.semester }}</p>
+  </div>
+  <div class="head-actions wrap">
+    <a class="btn" href="/groups/{{ group.id }}/edit">Редагувати групу</a>
+    <a class="btn" href="/reports/{{ group.id }}" target="_blank">Перегляд звіту</a>
+    <a class="btn" href="/reports/{{ group.id }}/download">Завантажити звіт</a>
+    <form method="post" action="/groups/{{ group.id }}/delete" onsubmit="return confirm('Видалити групу?')">
+      <button class="btn danger" type="submit">Видалити групу</button>
+    </form>
+  </div>
+</div>
+
+<div class="two-col stretch-top">
+  <div class="card">
+    <div class="section-title">Інформація про групу</div>
+    <p>{{ group.description or 'Опис поки не додано.' }}</p>
+    <div class="info-grid">
+      <div><span class="muted">Студентів</span><strong>{{ group.students|length }}</strong></div>
+      <div><span class="muted">Куратор</span><strong>{{ group.curator }}</strong></div>
+      <div><span class="muted">Семестр</span><strong>{{ group.semester }}</strong></div>
+      <div><span class="muted">Спеціальність</span><strong>{{ group.specialty }}</strong></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Додати студента</div>
+    <form method="post" action="/groups/{{ group.id }}/students/create" class="form-grid">
+      <label>ПІБ<input name="full_name" value="{{ form.get('full_name', '') }}"></label>
+      <label>Email<input name="email" value="{{ form.get('email', '') }}"></label>
+      <label>Відвідуваність %<input name="attendance" value="{{ form.get('attendance', '') }}"></label>
+      <label>Середній бал<input name="average_score" value="{{ form.get('average_score', '') }}"></label>
+      <label>Активність 0–10<input name="activity_level" value="{{ form.get('activity_level', '') }}"></label>
+      <label>Пропуски<input name="missed_classes" value="{{ form.get('missed_classes', '') }}"></label>
+      <label>Бал за модулі<input name="module_score" value="{{ form.get('module_score', '') }}"></label>
+      <label>Фактичний результат
+        <select name="exam_passed">
+          <option value="1">Склав</option>
+          <option value="0">Не склав</option>
+        </select>
+      </label>
+      <button class="btn primary" type="submit">Додати студента</button>
+    </form>
+    {% if errors %}<div class="error-box">Є помилки у формі. Перевір введені числа та ПІБ.</div>{% endif %}
+  </div>
+</div>
+
+<div class="card mt-16">
+  <div class="section-title">Студенти групи</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Студент</th><th>Відвідуваність</th><th>Сер. бал</th><th>Активність</th><th>Пропуски</th><th>Модуль</th><th>Факт</th><th>Прогноз</th><th>Ймовірність</th><th>Дії</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for student in group.students %}
+        <tr>
+          <td>{{ student.full_name }}</td>
+          <td>{{ student.attendance }}%</td>
+          <td>{{ student.average_score }}</td>
+          <td>{{ student.activity_level }}</td>
+          <td>{{ student.missed_classes }}</td>
+          <td>{{ student.module_score }}</td>
+          <td><span class="result {{ 'success' if student.exam_passed == 1 else 'danger' }}">{{ 'Склав' if student.exam_passed == 1 else 'Не склав' }}</span></td>
+          <td>{{ student.prediction_result }}</td>
+          <td>{{ '%.1f'|format(student.prediction_probability * 100) }}%</td>
+          <td>
+            <div class="actions-col">
+              <form method="post" action="/students/{{ student.id }}/predict"><button class="btn small primary" type="submit">Прогноз</button></form>
+              <a class="btn small" href="/students/{{ student.id }}/edit">Редагувати</a>
+              <form method="post" action="/students/{{ student.id }}/delete" onsubmit="return confirm('Видалити студента?')"><button class="btn small danger" type="submit">Видалити</button></form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="10">У цій групі ще немає студентів.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

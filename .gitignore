@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+*.db
+*.sqlite3
+logs/*.log
+*.log
+*.pkl
+*.joblib
+reports/*.txt
+reports/*.html
+reports/*.pdf
+.DS_Store
+.vscode/
+.idea/
+.pytest_cache/
+.mypy_cache/

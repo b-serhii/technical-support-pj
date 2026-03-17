@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-head"><h1>Редагування групи {{ group.name }}</h1></div>
+<div class="card narrow-card">
+  <form method="post" class="form-grid">
+    <label>Назва групи<input name="name" value="{{ group.name }}"></label>
+    <label>Спеціальність<input name="specialty" value="{{ group.specialty }}"></label>
+    <label>Куратор<input name="curator" value="{{ group.curator }}"></label>
+    <label>Семестр<input name="semester" value="{{ group.semester }}"></label>
+    <label class="full">Опис<textarea name="description">{{ group.description }}</textarea></label>
+    <button class="btn primary" type="submit">Зберегти зміни</button>
+    <a class="btn" href="/groups/{{ group.id }}">Скасувати</a>
+  </form>
+  {% if errors %}<div class="error-box">Будь ласка, заповни всі обов’язкові поля.</div>{% endif %}
+</div>
+{% endblock %}

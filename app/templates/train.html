@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Навчання моделі</h1>
+    <p class="muted">Система використовує логістичну регресію для прогнозування результату складання іспиту.</p>
+  </div>
+  <form method="post"><button class="btn primary" type="submit">Запустити навчання</button></form>
+</div>
+
+{% if error %}
+<div class="error-box">{{ error }}</div>
+{% endif %}
+
+{% if trained and metrics %}
+<section class="stats-grid">
+  <div class="card stat"><div class="muted">Accuracy</div><div class="value">{{ '%.1f'|format(metrics.accuracy * 100) }}%</div></div>
+  <div class="card stat"><div class="muted">Precision</div><div class="value">{{ '%.1f'|format(metrics.precision * 100) }}%</div></div>
+  <div class="card stat"><div class="muted">Recall</div><div class="value">{{ '%.1f'|format(metrics.recall * 100) }}%</div></div>
+  <div class="card stat"><div class="muted">F1-score</div><div class="value">{{ '%.1f'|format(metrics.f1 * 100) }}%</div></div>
+</section>
+<div class="card">
+  <div class="section-title">Пояснення</div>
+  <p>Модель навчена на внутрішніх даних студентів. Для прогнозу враховуються п’ять ознак: відвідуваність, середній бал, активність, кількість пропусків і бал за модулі.</p>
+  <p class="muted">Навчальна вибірка: {{ metrics.train_size }} записів · Тестова вибірка: {{ metrics.test_size }} записів</p>
+</div>
+{% else %}
+<div class="card">
+  <div class="section-title">Що тут відбувається</div>
+  <p>Після натискання кнопки система збирає дані всіх студентів, розділяє їх на навчальну і тестову вибірки, навчає модель і обчислює точність. Потім можна переходити до груп і натискати кнопку <strong>Прогноз</strong> біля конкретного студента.</p>
+</div>
+{% endif %}
+{% endblock %}
