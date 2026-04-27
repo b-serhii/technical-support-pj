@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session, joinedload
+from pydantic import BaseModel
 
 from .config import BASE_DIR, CONFIG
 from .database import Base, engine, get_db
@@ -52,6 +53,19 @@ def index(request: Request, db: Session = Depends(get_db)):
     groups = db.query(Group).options(joinedload(Group.students)).order_by(Group.name.asc()).all()
     latest_predictions = db.query(PredictionLog).order_by(PredictionLog.created_at.desc()).limit(5).all()
     return render(request, 'index.html', stats=stats, groups=groups, latest_predictions=latest_predictions)
+
+class PredictRequest(BaseModel):
+    grade: float
+    attendance: float
+    activity: float
+
+@app.post("/predict")
+async def api_predict(data: PredictRequest): # Змінено назву функції на api_predict
+    if data.grade > 60 and data.attendance > 70:
+        return {"result": "Склав", "probability": 0.85}
+    else:
+        return {"result": "Не склав", "probability": 0.3}
+
 
 @app.get('/groups', response_class=HTMLResponse)
 def groups_page(request: Request, db: Session = Depends(get_db)):

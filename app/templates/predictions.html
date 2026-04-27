@@ -1,10 +1,49 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="page-head"><h1>Історія прогнозів</h1></div>
+
+<div class="page-head">
+  <h1>Прогноз успішності</h1>
+</div>
+
+<div class="card prediction-box">
+  <h2>📊 Новий прогноз</h2>
+
+    <form onsubmit="event.preventDefault(); makePrediction();">
+
+      <label>Середній бал:</label>
+      <input type="number" id="grade" required>
+
+      <label>Відвідуваність (%):</label>
+      <input type="number" id="attendance" required>
+
+      <label>Активність:</label>
+      <input type="number" id="activity" required>
+
+      <button type="submit">Зробити прогноз</button>
+
+    </form>
+
+    <div id="result"></div>
+</div>
+
+<div class="page-head" style="margin-top:40px;">
+  <h1>Історія прогнозів</h1>
+</div>
+
 <div class="card">
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Дата</th><th>Студент</th><th>Група</th><th>Модель</th><th>Результат</th><th>Ймовірність</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Студент</th>
+          <th>Група</th>
+          <th>Модель</th>
+          <th>Результат</th>
+          <th>Ймовірність</th>
+        </tr>
+      </thead>
       <tbody>
         {% for item in predictions %}
         <tr>
@@ -12,14 +51,49 @@
           <td>{{ item.student_name }}</td>
           <td>{{ item.group_name }}</td>
           <td>{{ item.model_name }}</td>
-          <td><span class="result {{ 'success' if item.result == 'Склав' else 'danger' }}">{{ item.result }}</span></td>
+          <td>
+            <span class="result {{ 'success' if item.result == 'Склав' else 'danger' }}">
+              {{ item.result }}
+            </span>
+          </td>
           <td>{{ '%.1f'|format(item.probability * 100) }}%</td>
         </tr>
         {% else %}
-        <tr><td colspan="6">Ще немає жодного прогнозу.</td></tr>
+        <tr>
+          <td colspan="6">Ще немає жодного прогнозу.</td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+
+<script>
+async function makePrediction() {
+    const grade = document.getElementById("grade").value;
+    const attendance = document.getElementById("attendance").value;
+    const activity = document.getElementById("activity").value;
+
+    const response = await fetch("/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+        grade: parseFloat(grade),
+        attendance: parseFloat(attendance),
+        activity: parseFloat(activity)
+    })
+    });
+
+    const data = await response.json();
+
+    const resultText = data.result;
+    const probability = (data.probability * 100).toFixed(1);
+
+    document.getElementById("result").innerHTML =
+        `<h3>${resultText} (${probability}%)</h3>`;
+}
+</script>
+
 {% endblock %}
